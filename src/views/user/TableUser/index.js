@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { Grid, Typography, Button, Select, MenuItem } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 import CustomTable from "@/components/Table";
 import {
@@ -20,6 +21,7 @@ import UserServices from "@/services/UserServices";
 
 export default function TableUser() {
   const dispatch = useDispatch();
+  const route = useRouter();
 
   const [selectedData, setSelectedData] = useState({});
   const [filter, setFilter] = useState({
@@ -59,16 +61,8 @@ export default function TableUser() {
     }
   };
 
-  const handleOpenInput = (data) => {
-    toggleInput();
-    if (data) {
-      setSelectedData(data);
-    }
-  };
-
-  const handleCloseInput = () => {
-    toggleInput();
-    setSelectedData({});
+  const handleClickInput = (data) => {
+    route.push(`/user/detail?id=${data?.id}`);
   };
 
   const handleOpenDelete = (data) => {
@@ -145,7 +139,7 @@ export default function TableUser() {
           <Button
             variant="contained"
             startIcon={<Icon icon="ic:baseline-plus" height={16} width={16} />}
-            onClick={() => handleOpenInput()}
+            onClick={() => route.push("/user/add")}
           >
             Tambah User
           </Button>
@@ -167,7 +161,7 @@ export default function TableUser() {
                     <Icon icon="mdi:pencil-outline" height={16} width={16} />
                   }
                   sx={{ mr: 2 }}
-                  onClick={() => handleOpenInput(row)}
+                  onClick={() => handleClickInput(row)}
                 >
                   Detail
                 </Button>
