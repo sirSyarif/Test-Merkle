@@ -1,13 +1,11 @@
 "use client";
 import { useMemo } from "react";
-// material
 import { CssBaseline } from "@mui/material";
 import {
   ThemeProvider,
   createTheme,
   StyledEngineProvider,
 } from "@mui/material/styles";
-//
 import shape from "./shape";
 import palette from "./palette";
 import typography from "./typography";
@@ -15,9 +13,8 @@ import breakpoints from "./breakpoints";
 import componentsOverride from "./overrides";
 import shadows, { customShadows } from "./shadows";
 
-// ----------------------------------------------------------------------
-
 export default function ThemeConfig({ children }) {
+  // Merging custom styling mui with default mui style
   const themeOptions = useMemo(
     () => ({
       palette,
