@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import ThemeConfig from "@/theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -11,6 +12,20 @@ import { LoadingModal, ErrorModal, SuccessModal } from "@/components/Modal";
 
 import store from "@/redux/store";
 import "./globals.scss";
+
+// custom rule for react query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnmount: false,
+      refetchOnReconnect: false,
+      retry: 5,
+      retryDelay: (attemptIndex) => Math.min(5000 * 2 ** attemptIndex, 30000),
+      staleTime: 5 * 1000,
+    },
+  },
+});
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
@@ -30,23 +45,25 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Provider store={store}>
-          <ThemeConfig>
-            <main className="app-layout">
-              {isAuth ? (
-                <main>{children}</main>
-              ) : (
-                <Sidebar>
-                  <Navbar />
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <ThemeConfig>
+              <main className="app-layout">
+                {isAuth ? (
                   <main>{children}</main>
-                </Sidebar>
-              )}
-              <LoadingModal />
-              <ErrorModal />
-              <SuccessModal />
-            </main>
-          </ThemeConfig>
-        </Provider>
+                ) : (
+                  <Sidebar>
+                    <Navbar />
+                    <main>{children}</main>
+                  </Sidebar>
+                )}
+                <LoadingModal />
+                <ErrorModal />
+                <SuccessModal />
+              </main>
+            </ThemeConfig>
+          </Provider>
+        </QueryClientProvider>
       </body>
     </html>
   );
